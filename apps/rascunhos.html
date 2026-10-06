@@ -475,9 +475,9 @@ const MAX_FILE = 60 * 1024;
 async function lerTexto(file) {
   const buf = await file.arrayBuffer();
   let txt = new TextDecoder("utf-8").decode(buf);
-  // Bloco de Notas antigo salva em ANSI: acentos viram "�" em UTF-8.
-  if (txt.includes("�")) txt = new TextDecoder("windows-1252").decode(buf);
-  return txt.replace(/^﻿/, "").replace(/\r\n?/g, "\n").trim();
+  // Bloco de Notas antigo salva em ANSI: em UTF-8 os acentos viram caractere inválido.
+  if (txt.includes("\uFFFD")) txt = new TextDecoder("windows-1252").decode(buf);
+  return txt.replace(/^\uFEFF/, "").replace(/\r\n?/g, "\n").trim();
 }
 async function carregarArquivos(files) {
   const lista = [...files].filter(f => /\.(txt|md)$/i.test(f.name) || f.type.startsWith("text/"));
