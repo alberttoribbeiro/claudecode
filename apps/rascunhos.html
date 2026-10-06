@@ -1,0 +1,528 @@
+<title>Rascunhos do Jarvis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: uma coluna estreita de caderno; captura no topo, filtros por área, notas abaixo. */
+:root {
+  --bg: #eef1f4;
+  --surface: #ffffff;
+  --sunk: #e3e8ee;
+  --fg: #18202a;
+  --muted: #5b6776;
+  --line: #d3dae3;
+  --accent: #1f5e8c;
+  --accent-fg: #ffffff;
+  --danger: #b3261e;
+  --ok: #2e7d4f;
+  --a0: #6b7684;
+  --a1: #7b4fb8;
+  --a2: #2e8a57;
+  --a3: #c2456b;
+  --a4: #1f6fb0;
+  --a5: #a8730b;
+  --a6: #0f8a8a;
+  --a7: #8a5a3c;
+  --font-display: "Familjen Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", Roboto, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11151a; --surface: #1a2028; --sunk: #232b35; --fg: #e6ebf1; --muted: #9aa6b4;
+    --line: #2e3844; --accent: #6fb1e3; --accent-fg: #0b1620; --danger: #f08a80; --ok: #7ccf9d;
+    --a0: #9aa6b4; --a1: #b597e6; --a2: #74c995; --a3: #ec8fab; --a4: #7bb6ea; --a5: #e2b45a; --a6: #5fd0cf; --a7: #cf9e7f;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11151a; --surface: #1a2028; --sunk: #232b35; --fg: #e6ebf1; --muted: #9aa6b4;
+  --line: #2e3844; --accent: #6fb1e3; --accent-fg: #0b1620; --danger: #f08a80; --ok: #7ccf9d;
+  --a0: #9aa6b4; --a1: #b597e6; --a2: #74c995; --a3: #ec8fab; --a4: #7bb6ea; --a5: #e2b45a; --a6: #5fd0cf; --a7: #cf9e7f;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.55; }
+.wrap { max-width: 760px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 64px; display: flex; flex-direction: column; gap: 22px; }
+header h1 { font-family: var(--font-display); font-weight: 700; font-size: 30px; letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
+header p { margin: 4px 0 0; color: var(--muted); max-width: 60ch; }
+.eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+
+.capture { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 1px 0 var(--line); }
+.capture label { font-family: var(--font-display); font-weight: 600; font-size: 16px; }
+textarea { width: 100%; min-height: 120px; resize: vertical; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--fg); font: inherit; padding: 12px; }
+textarea:focus, input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.row .grow { flex: 1 1 200px; min-width: 0; }
+.hint { color: var(--muted); font-size: 13px; }
+button { font: inherit; cursor: pointer; border-radius: 9px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); padding: 7px 12px; }
+button:hover { border-color: var(--muted); }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); font-weight: 600; padding: 9px 16px; }
+button.primary:disabled { opacity: .6; cursor: progress; }
+button.ghost { border-color: transparent; background: transparent; color: var(--muted); padding: 4px 8px; }
+button.ghost:hover { color: var(--fg); background: var(--sunk); }
+button.danger { color: var(--danger); }
+.status { font-size: 14px; color: var(--muted); display: flex; gap: 8px; align-items: center; }
+.status.err { color: var(--danger); }
+.spin { width: 14px; height: 14px; border: 2px solid var(--line); border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .spin { animation: none; } }
+.result { border-top: 1px dashed var(--line); padding-top: 10px; display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+.result b { font-weight: 600; }
+
+.filters { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: thin; }
+.chip { flex: none; display: inline-flex; align-items: center; gap: 7px; border-radius: 999px; padding: 6px 12px; font-size: 13.5px; white-space: nowrap; }
+.chip[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--c, var(--a0)); flex: none; }
+.count { font-family: var(--font-mono); font-size: 12px; opacity: .75; font-variant-numeric: tabular-nums; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.toolbar input { flex: 1 1 220px; min-width: 0; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); color: var(--fg); font: inherit; padding: 8px 12px; }
+.areahead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px; }
+.areahead h2 { font-family: var(--font-display); font-size: 20px; margin: 0; display: flex; align-items: center; gap: 8px; }
+.areahead h2 .dot { width: 12px; height: 12px; }
+.confirm { background: var(--sunk); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 10px; font-size: 14px; }
+
+.notes { display: flex; flex-direction: column; gap: 0; border-top: 1px solid var(--line); }
+.note { padding-block: 16px; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.note-top { display: flex; gap: 10px; align-items: flex-start; justify-content: space-between; }
+.note h3 { font-family: var(--font-display); font-weight: 600; font-size: 18px; margin: 0; text-wrap: balance; min-width: 0; overflow-wrap: anywhere; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); }
+.tag { display: inline-flex; align-items: center; gap: 6px; color: var(--c, var(--a0)); font-weight: 500; }
+.pill { border: 1px solid currentColor; border-radius: 999px; padding: 0 7px; line-height: 18px; }
+.pill.fluxo { color: var(--accent); }
+.pill.ex { color: var(--a5); }
+.body { overflow-wrap: anywhere; }
+.body p { margin: 0 0 6px; }
+.body ul { margin: 0 0 6px; padding-left: 20px; }
+.steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; counter-reset: s; }
+.steps li { display: grid; grid-template-columns: 22px 1fr; gap: 8px; align-items: start; }
+.steps input { width: 17px; height: 17px; margin: 3px 0 0; accent-color: var(--accent); }
+.steps li.done span { text-decoration: line-through; color: var(--muted); }
+.steps-title { font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+details summary { cursor: pointer; color: var(--muted); font-size: 13px; }
+details .cap { border-left: 2px solid var(--line); padding: 4px 0 4px 10px; margin-top: 8px; font-size: 13.5px; color: var(--muted); white-space: pre-wrap; overflow-wrap: anywhere; }
+details .cap time { display: block; font-family: var(--font-mono); font-size: 11px; }
+.actions { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.actions select { font: inherit; font-size: 13px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--fg); padding: 4px 6px; max-width: 100%; }
+.empty { padding: 28px 0; color: var(--muted); display: flex; flex-direction: column; gap: 6px; }
+.empty strong { color: var(--fg); font-family: var(--font-display); font-size: 17px; }
+.banner { background: var(--sunk); border-radius: 10px; padding: 10px 12px; font-size: 14px; }
+@media (max-width: 480px) { header h1 { font-size: 25px; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Jarvis · Caderno de captura</div>
+    <h1>Rascunhos do Jarvis</h1>
+    <p>Despeje o que estiver na cabeça. O Jarvis separa por área, junta com o que já existe e transforma assuntos repetidos em um fluxo de passos.</p>
+  </header>
+
+  <div id="banner" class="banner" hidden></div>
+
+  <section class="capture" aria-labelledby="cap-label">
+    <label id="cap-label" for="cap-text">O que está na sua cabeça?</label>
+    <textarea id="cap-text" placeholder="Ex.: preciso voltar a treinar de manhã, ligar pra minha mãe no domingo, e revisar a planilha de gastos do mês…"></textarea>
+    <div class="row">
+      <span class="hint grow">Pode misturar vários assuntos. Para falar em vez de digitar, use o microfone do teclado do celular (ditado). Ctrl+Enter envia.</span>
+      <button id="cap-btn" class="primary" type="button">Organizar</button>
+    </div>
+    <div id="cap-status" class="status" hidden></div>
+    <div id="cap-result" class="result" hidden></div>
+  </section>
+
+  <nav id="filters" class="filters" aria-label="Filtrar por área"></nav>
+
+  <div class="toolbar">
+    <input id="search" type="search" placeholder="Buscar nas notas" aria-label="Buscar nas notas">
+  </div>
+
+  <section id="area-panel" hidden></section>
+
+  <section id="notes" class="notes" aria-live="polite"></section>
+</div>
+
+<script>
+const AREAS = [
+  { n: 0, nome: "Sem área", curto: "Sem área", subs: [] },
+  { n: 1, nome: "Espiritual / Propósito / Emocional", curto: "Espiritual", subs: ["Comunhão com Deus", "Cura e Equilíbrio Emocional", "Alinhamento com o Propósito"] },
+  { n: 2, nome: "Saúde & Energia", curto: "Saúde", subs: ["Exercícios e Movimento", "Alimentação e Nutrição", "Sono, Descanso e Bem-estar"] },
+  { n: 3, nome: "Relacionamentos", curto: "Relacionamentos", subs: ["Relacionamento Amoroso", "Cura de Feridas Emocionais", "Afeto e Intimidade", "Convívio Familiar", "Amizades", "Rede de Apoio e Contatos"] },
+  { n: 4, nome: "Trabalho / Carreira / Habilidades", curto: "Trabalho", subs: ["Desempenho no Trabalho / Negócio", "Habilidades Técnicas", "Posicionamento Profissional"] },
+  { n: 5, nome: "Finanças & Negócios", curto: "Finanças", subs: ["Gestão Financeira Pessoal", "Geração de Receita", "Investimentos"] },
+  { n: 6, nome: "Crescimento & Mente", curto: "Crescimento", subs: ["Mentalidade", "Desenvolvimento Pessoal", "Intelecto e Raciocínio", "Formação Técnica", "Cursos", "Rotina de Estudos"] },
+  { n: 7, nome: "Vida Prática & Ambiente", curto: "Vida Prática", subs: ["Organização dos Espaços", "Minimalismo", "Ambiente", "Gestão Digital e Produtividade", "Automação", "Arquivos", "Hobbies e Lazer", "Conteúdo Inspirador", "Criatividade", "Identidade", "Estilo e Aparência"] },
+];
+const areaOf = n => AREAS[n] || AREAS[0];
+const color = n => `var(--a${areaOf(n).n})`;
+
+const state = { notes: [], filter: "all", q: "", db: null, col: null, sample: null, busy: false, confirmArea: false, confirmDel: null, loaded: false };
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const now = () => Date.now();
+
+function when(ts) {
+  if (!ts) return "";
+  const d = now() - ts, m = Math.round(d / 60000);
+  if (m < 1) return "agora";
+  if (m < 60) return `há ${m} min`;
+  const h = Math.round(m / 60);
+  if (h < 24) return `há ${h} h`;
+  return new Date(ts).toLocaleDateString("pt-BR", { day: "2-digit", month: "short" });
+}
+
+function md(text) {
+  const lines = String(text || "").split(/\n/);
+  let out = "", inList = false;
+  const inline = s => esc(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+  for (const raw of lines) {
+    const l = raw.trim();
+    const li = l.match(/^[-*•]\s+(.*)/);
+    if (li) { if (!inList) { out += "<ul>"; inList = true; } out += `<li>${inline(li[1])}</li>`; continue; }
+    if (inList) { out += "</ul>"; inList = false; }
+    if (l) out += `<p>${inline(l)}</p>`;
+  }
+  if (inList) out += "</ul>";
+  return out;
+}
+
+/* ---------- rascunho local (só conveniência) ---------- */
+const DRAFT = "rascunhos-draft";
+try { $("cap-text").value = localStorage.getItem(DRAFT) || ""; } catch (e) {}
+$("cap-text").addEventListener("input", e => { try { localStorage.setItem(DRAFT, e.target.value); } catch (err) {} });
+
+/* ---------- render ---------- */
+function visibleNotes() {
+  const q = state.q.trim().toLowerCase();
+  return state.notes.filter(n => {
+    if (state.filter !== "all" && (n.area ?? 0) !== state.filter) return false;
+    if (!q) return true;
+    const hay = [n.titulo, n.corpo, ...(n.passos || []).map(p => p.t), ...(n.capturas || []).map(c => c.texto)].join(" ").toLowerCase();
+    return hay.includes(q);
+  });
+}
+
+function renderFilters() {
+  const counts = {};
+  state.notes.forEach(n => { const a = n.area ?? 0; counts[a] = (counts[a] || 0) + 1; });
+  const chips = [`<button class="chip" data-f="all" aria-pressed="${state.filter === "all"}">Todas <span class="count">${state.notes.length}</span></button>`];
+  for (const a of AREAS) {
+    if (a.n === 0 && !counts[0]) continue;
+    chips.push(`<button class="chip" data-f="${a.n}" aria-pressed="${state.filter === a.n}" style="--c:${color(a.n)}"><span class="dot"></span>${esc(a.curto)} <span class="count">${counts[a.n] || 0}</span></button>`);
+  }
+  $("filters").innerHTML = chips.join("");
+}
+
+function renderAreaPanel() {
+  const p = $("area-panel");
+  if (state.filter === "all") { p.hidden = true; return; }
+  const a = areaOf(state.filter);
+  const n = state.notes.filter(x => (x.area ?? 0) === a.n).length;
+  p.hidden = false;
+  let html = `<div class="areahead"><h2 style="--c:${color(a.n)}"><span class="dot"></span>${esc(a.nome)}</h2>`;
+  if (a.n !== 0 && n >= 2 && !state.confirmArea) html += `<button type="button" data-act="area-ask">Reorganizar esta área</button>`;
+  html += `</div>`;
+  if (a.subs.length) html += `<div class="hint">${a.subs.map(esc).join(" · ")}</div>`;
+  if (state.confirmArea) {
+    html += `<div class="confirm"><div>O Jarvis vai reler as ${n} notas de <b>${esc(a.curto)}</b>, unir as duplicadas e transformar assuntos relacionados em fluxos. As capturas originais continuam guardadas dentro das notas.</div>
+      <div class="row"><button class="primary" type="button" data-act="area-go">Reorganizar</button><button type="button" data-act="area-cancel">Cancelar</button></div></div>`;
+  }
+  p.innerHTML = html;
+}
+
+function areaOptions(sel) {
+  return AREAS.map(a => `<option value="${a.n}"${a.n === sel ? " selected" : ""}>${esc(a.curto)}</option>`).join("");
+}
+
+function renderNotes() {
+  const el = $("notes");
+  if (!state.loaded) {
+    el.innerHTML = `<div class="empty"><strong>Carregando suas notas…</strong><span>Suas notas aparecem aqui, separadas pelas 7 áreas.</span></div>`;
+    return;
+  }
+  const list = visibleNotes();
+  if (!list.length) {
+    el.innerHTML = state.notes.length
+      ? `<div class="empty"><strong>Nada por aqui.</strong><span>Nenhuma nota nesta área ou busca.</span></div>`
+      : `<div class="empty"><strong>Nenhuma nota ainda.</strong><span>Escreva qualquer coisa no campo acima e toque em Organizar. O Jarvis cria a nota na área certa.</span></div>`;
+    return;
+  }
+  el.innerHTML = list.map(n => {
+    const a = areaOf(n.area ?? 0);
+    const passos = n.passos || [];
+    const caps = n.capturas || [];
+    const fluxo = n.tipo === "fluxo" && passos.length;
+    return `<article class="note" data-id="${esc(n.id)}">
+      <div class="note-top"><h3>${esc(n.titulo || "Sem título")}</h3></div>
+      <div class="meta">
+        <span class="tag" style="--c:${color(a.n)}"><span class="dot"></span>${esc(a.curto)}${n.subarea ? " · " + esc(n.subarea) : ""}</span>
+        ${fluxo ? `<span class="pill fluxo">fluxo · ${passos.filter(p => p.done).length}/${passos.length}</span>` : `<span class="pill">rascunho</span>`}
+        ${caps.length > 1 ? `<span class="pill">${caps.length} capturas unidas</span>` : ""}
+        ${n.exemplo ? `<span class="pill ex">exemplo</span>` : ""}
+        <span>${esc(when(n.updatedAt))}</span>
+      </div>
+      ${n.corpo ? `<div class="body">${md(n.corpo)}</div>` : ""}
+      ${fluxo ? `<div class="steps-title">Fluxo</div><ol class="steps">${passos.map((p, i) => `<li class="${p.done ? "done" : ""}"><input type="checkbox" id="st-${esc(n.id)}-${i}" data-act="step" data-i="${i}"${p.done ? " checked" : ""}><label for="st-${esc(n.id)}-${i}"><span>${esc(p.t)}</span></label></li>`).join("")}</ol>` : ""}
+      ${caps.length ? `<details><summary>Ver o que você escreveu (${caps.length})</summary>${caps.map(c => `<div class="cap"><time>${esc(new Date(c.em || 0).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }))}</time>${esc(c.texto)}</div>`).join("")}</details>` : ""}
+      <div class="actions">
+        <label class="hint" for="mv-${esc(n.id)}">Área</label>
+        <select id="mv-${esc(n.id)}" data-act="move">${areaOptions(a.n)}</select>
+        <button class="ghost" type="button" data-act="copy">Copiar</button>
+        ${state.confirmDel === n.id
+          ? `<button class="ghost danger" type="button" data-act="del-go">Confirmar exclusão</button><button class="ghost" type="button" data-act="del-cancel">Cancelar</button>`
+          : `<button class="ghost" type="button" data-act="del-ask">Excluir</button>`}
+      </div>
+    </article>`;
+  }).join("");
+}
+
+function render() { renderFilters(); renderAreaPanel(); renderNotes(); }
+
+function setStatus(msg, kind) {
+  const s = $("cap-status");
+  if (!msg) { s.hidden = true; return; }
+  s.hidden = false;
+  s.className = "status" + (kind === "err" ? " err" : "");
+  s.innerHTML = (kind === "busy" ? `<span class="spin" aria-hidden="true"></span>` : "") + `<span>${esc(msg)}</span>`;
+}
+function banner(msg) { const b = $("banner"); b.hidden = !msg; b.textContent = msg || ""; }
+
+/* ---------- Jarvis (Claude) ---------- */
+function areasSpec() {
+  return AREAS.filter(a => a.n).map(a => `${a.n}. ${a.nome} (sub-áreas: ${a.subs.join(", ")})`).join("\n");
+}
+function notesContext(notes, maxBytes = 45000) {
+  const out = []; let size = 0;
+  for (const n of notes) {
+    const item = { id: n.id, area: n.area ?? 0, subarea: n.subarea || "", titulo: n.titulo || "", tipo: n.tipo || "rascunho", corpo: String(n.corpo || "").slice(0, 900), passos: (n.passos || []).map(p => p.t) };
+    const s = JSON.stringify(item);
+    if (size + s.length > maxBytes) break;
+    out.push(item); size += s.length;
+  }
+  return out;
+}
+
+const REGRAS = `Regras de escrita:
+- Português brasileiro, direto, sem floreio. Não invente fatos, datas ou compromissos que a pessoa não disse.
+- "titulo": curto (até 60 caracteres), nomeia o assunto.
+- "corpo": a nota consolidada e limpa, frases curtas; use linhas começando com "- " para listas. Nunca perca uma informação que já estava na nota ou na captura.
+- "tipo": "fluxo" quando o assunto é um processo, rotina, projeto ou algo que se repete e pode virar passos; senão "rascunho".
+- "passos": se tipo for "fluxo", 3 a 8 passos acionáveis, em ordem, cada um começando com verbo, otimizados (sem etapas redundantes). Se "rascunho", lista vazia.`;
+
+async function organizar() {
+  const text = $("cap-text").value.trim();
+  if (!text || state.busy) return;
+  if (!state.col) { setStatus("O banco de notas não está disponível. Abra esta página logado no claude.ai.", "err"); return; }
+  state.busy = true; $("cap-btn").disabled = true; $("cap-result").hidden = true;
+
+  if (!state.sample) {
+    await salvarSemArea(text);
+    finishCapture([{ acao: "nova", titulo: text.slice(0, 60), area: 0 }], "O Jarvis não está disponível nesta visualização. A nota foi salva em Sem área.");
+    return;
+  }
+
+  setStatus("Jarvis organizando…", "busy");
+  const prompt = `Você é o Jarvis, chief of staff pessoal. A pessoa despejou uma captura de pensamento (texto digitado ou ditado). Organize no caderno dela.
+
+As 7 áreas:
+${areasSpec()}
+
+Notas que já existem (JSON):
+${JSON.stringify(notesContext(state.notes))}
+
+Nova captura:
+"""${text}"""
+
+Tarefa:
+1. Separe a captura em assuntos distintos (uma captura pode ter vários).
+2. Para cada assunto escolha a área (1 a 7) e a sub-área mais próxima.
+3. Compare com as notas existentes:
+   - "duplicada": já está coberto por uma nota existente; devolva essa nota praticamente igual, só acrescentando o que for novo.
+   - "mesclar": é relacionado ou complementa uma nota existente; devolva a nota existente reescrita já com a nova informação. Se juntos formam um processo, transforme em fluxo.
+   - "nova": assunto novo.
+   Em "duplicada" e "mesclar", "alvo" é o id da nota existente. Nunca use o mesmo alvo em dois itens.
+4. "trecho": a parte da captura original que gerou este item, com as palavras da pessoa.
+
+${REGRAS}
+
+Responda somente com JSON neste formato:
+{"itens":[{"acao":"nova|mesclar|duplicada","alvo":"id ou null","area":1,"subarea":"...","titulo":"...","corpo":"...","tipo":"rascunho|fluxo","passos":["..."],"trecho":"..."}]}`;
+
+  let res;
+  try {
+    res = await state.sample.json(prompt, { cache: false });
+  } catch (e) {
+    await salvarSemArea(text);
+    const msg = e && e.code === "not_granted"
+      ? "Sem permissão para usar o Jarvis. A nota foi salva em Sem área; permita o uso e reorganize depois."
+      : e && e.code === "rate_limited"
+        ? "Muitas organizações seguidas. A nota foi salva em Sem área; tente reorganizar em um minuto."
+        : "O Jarvis não conseguiu organizar agora. A nota foi salva em Sem área.";
+    finishCapture([{ acao: "nova", titulo: text.slice(0, 60), area: 0 }], msg);
+    return;
+  }
+
+  const itens = Array.isArray(res?.itens) ? res.itens : [];
+  if (!itens.length) { await salvarSemArea(text); finishCapture([{ acao: "nova", titulo: text.slice(0, 60), area: 0 }], "Não entendi a resposta do Jarvis. A nota foi salva em Sem área."); return; }
+
+  const usados = new Set(); const feitos = [];
+  try {
+    for (const it of itens) {
+      const area = Number.isInteger(+it.area) && +it.area >= 1 && +it.area <= 7 ? +it.area : 0;
+      const cap = { texto: String(it.trecho || text), em: now() };
+      const alvo = state.notes.find(n => n.id === it.alvo);
+      const base = { area, subarea: String(it.subarea || ""), titulo: String(it.titulo || "").slice(0, 120) || text.slice(0, 60), corpo: String(it.corpo || ""), tipo: it.tipo === "fluxo" ? "fluxo" : "rascunho", updatedAt: now() };
+      if ((it.acao === "mesclar" || it.acao === "duplicada") && alvo && !usados.has(alvo.id)) {
+        usados.add(alvo.id);
+        await state.col.doc(alvo.id).set({ ...stripId(alvo), ...base, passos: mergeSteps(alvo.passos, it.passos, base.tipo), capturas: [...(alvo.capturas || []), cap], exemplo: false });
+        feitos.push({ acao: it.acao, titulo: base.titulo, area });
+      } else {
+        await state.col.add({ ...base, passos: mergeSteps([], it.passos, base.tipo), capturas: [cap], createdAt: now() });
+        feitos.push({ acao: "nova", titulo: base.titulo, area });
+      }
+    }
+  } catch (e) {
+    finishCapture(feitos, "Parte das notas não foi salva (" + (e?.message || "erro no banco") + "). O texto continua no campo.", true);
+    return;
+  }
+  finishCapture(feitos);
+}
+
+function stripId(n) { const { id, ...rest } = n; return rest; }
+function mergeSteps(old, novos, tipo) {
+  if (tipo !== "fluxo" || !Array.isArray(novos)) return [];
+  const done = new Map((old || []).map(p => [String(p.t).trim().toLowerCase(), !!p.done]));
+  return novos.filter(Boolean).slice(0, 12).map(t => ({ t: String(t), done: done.get(String(t).trim().toLowerCase()) || false }));
+}
+
+async function salvarSemArea(text) {
+  try {
+    await state.col.add({ area: 0, subarea: "", titulo: text.split(/\n/)[0].slice(0, 60), corpo: text, tipo: "rascunho", passos: [], capturas: [{ texto: text, em: now() }], createdAt: now(), updatedAt: now() });
+  } catch (e) {}
+}
+
+const ACAO = { nova: "Nova nota", mesclar: "Unida com", duplicada: "Já existia, atualizada:" };
+function finishCapture(feitos, aviso, keepText) {
+  state.busy = false; $("cap-btn").disabled = false;
+  if (!keepText) { $("cap-text").value = ""; try { localStorage.removeItem(DRAFT); } catch (e) {} }
+  setStatus(aviso || "", aviso ? "err" : "");
+  const r = $("cap-result");
+  if (feitos.length) {
+    r.hidden = false;
+    r.innerHTML = feitos.map(f => `<div><span class="tag" style="--c:${color(f.area)}"><span class="dot"></span>${esc(areaOf(f.area).curto)}</span> · ${esc(ACAO[f.acao] || "Nova nota")} <b>${esc(f.titulo)}</b></div>`).join("");
+  }
+}
+
+async function reorganizarArea() {
+  const a = areaOf(state.filter);
+  const notas = state.notes.filter(n => (n.area ?? 0) === a.n);
+  state.confirmArea = false; renderAreaPanel();
+  if (!state.sample) { banner("O Jarvis não está disponível nesta visualização."); return; }
+  if (state.busy) return;
+  state.busy = true;
+  const p = $("area-panel");
+  p.insertAdjacentHTML("beforeend", `<div class="status" id="area-st"><span class="spin" aria-hidden="true"></span><span>Jarvis reorganizando ${esc(a.curto)}…</span></div>`);
+  const prompt = `Você é o Jarvis, chief of staff pessoal. Reorganize as notas da área "${a.nome}" (sub-áreas: ${a.subs.join(", ")}).
+
+Notas atuais (JSON):
+${JSON.stringify(notesContext(notas, 90000))}
+
+Tarefa:
+- Una notas duplicadas ou que tratam do mesmo assunto.
+- Quando várias notas relacionadas formam um processo ou rotina, transforme em uma nota "fluxo" com passos otimizados.
+- Notas que não se relacionam com nenhuma outra ficam como estão (repita-as com o mesmo id em "origem").
+- Cada id original deve aparecer em exatamente uma nota de saída, no campo "origem".
+
+${REGRAS}
+
+Responda somente com JSON:
+{"notas":[{"origem":["id1","id2"],"subarea":"...","titulo":"...","corpo":"...","tipo":"rascunho|fluxo","passos":["..."]}]}`;
+  try {
+    const res = await state.sample.json(prompt, { cache: false });
+    const saida = Array.isArray(res?.notas) ? res.notas : [];
+    const byId = new Map(notas.map(n => [n.id, n]));
+    const usados = new Set();
+    let unidas = 0;
+    for (const s of saida) {
+      const origem = (Array.isArray(s.origem) ? s.origem : []).filter(id => byId.has(id) && !usados.has(id));
+      if (!origem.length) continue;
+      origem.forEach(id => usados.add(id));
+      const fontes = origem.map(id => byId.get(id));
+      const tipo = s.tipo === "fluxo" ? "fluxo" : "rascunho";
+      const oldSteps = fontes.flatMap(f => f.passos || []);
+      const body = {
+        area: a.n, subarea: String(s.subarea || fontes[0].subarea || ""), titulo: String(s.titulo || fontes[0].titulo || "").slice(0, 120),
+        corpo: String(s.corpo || ""), tipo, passos: mergeSteps(oldSteps, s.passos, tipo),
+        capturas: fontes.flatMap(f => f.capturas || []).sort((x, y) => (x.em || 0) - (y.em || 0)),
+        createdAt: Math.min(...fontes.map(f => f.createdAt || now())), updatedAt: now(), exemplo: fontes.every(f => f.exemplo),
+      };
+      await state.col.doc(origem[0]).set(body);
+      for (const id of origem.slice(1)) { await state.col.doc(id).delete(); unidas++; }
+    }
+    $("area-st")?.remove();
+    banner(unidas ? `${a.curto}: ${unidas} nota(s) unidas às relacionadas.` : `${a.curto}: notas revisadas, nada para unir.`);
+  } catch (e) {
+    $("area-st")?.remove();
+    banner(e?.code === "not_granted" ? "Sem permissão para usar o Jarvis nesta página." : "Não deu para reorganizar agora. Nada foi alterado ou só parte foi salva; tente de novo.");
+  }
+  state.busy = false;
+}
+
+/* ---------- eventos ---------- */
+$("cap-btn").addEventListener("click", organizar);
+$("cap-text").addEventListener("keydown", e => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); organizar(); } });
+$("search").addEventListener("input", e => { state.q = e.target.value; renderNotes(); });
+$("filters").addEventListener("click", e => {
+  const b = e.target.closest("[data-f]"); if (!b) return;
+  state.filter = b.dataset.f === "all" ? "all" : +b.dataset.f; state.confirmArea = false;
+  try { localStorage.setItem("rascunhos-filter", b.dataset.f); } catch (err) {}
+  render();
+});
+$("area-panel").addEventListener("click", e => {
+  const act = e.target.closest("[data-act]")?.dataset.act;
+  if (act === "area-ask") { state.confirmArea = true; renderAreaPanel(); }
+  if (act === "area-cancel") { state.confirmArea = false; renderAreaPanel(); }
+  if (act === "area-go") reorganizarArea();
+});
+$("notes").addEventListener("click", async e => {
+  const t = e.target.closest("[data-act]"); if (!t) return;
+  const card = t.closest(".note"); const id = card?.dataset.id; const n = state.notes.find(x => x.id === id);
+  if (!n) return;
+  const act = t.dataset.act;
+  if (act === "del-ask") { state.confirmDel = id; renderNotes(); }
+  if (act === "del-cancel") { state.confirmDel = null; renderNotes(); }
+  if (act === "del-go") { state.confirmDel = null; try { await state.col.doc(id).delete(); } catch (err) { banner("Não foi possível excluir: " + (err?.message || "erro")); } }
+  if (act === "copy") {
+    const txt = [n.titulo, n.corpo, ...(n.passos || []).map((p, i) => `${i + 1}. ${p.t}`)].filter(Boolean).join("\n");
+    try { await navigator.clipboard.writeText(txt); t.textContent = "Copiado"; setTimeout(() => (t.textContent = "Copiar"), 1500); } catch (err) { t.textContent = "Não copiou"; }
+  }
+});
+$("notes").addEventListener("change", async e => {
+  const t = e.target; const id = t.closest(".note")?.dataset.id; const n = state.notes.find(x => x.id === id);
+  if (!n || !state.col) return;
+  try {
+    if (t.dataset.act === "step") {
+      const passos = (n.passos || []).map((p, i) => i === +t.dataset.i ? { t: p.t, done: t.checked } : { t: p.t, done: !!p.done });
+      await state.col.doc(id).update({ passos });
+    }
+    if (t.dataset.act === "move") await state.col.doc(id).update({ area: +t.value, subarea: "", updatedAt: now() });
+  } catch (err) { banner("Não foi possível salvar: " + (err?.message || "erro")); }
+});
+
+try { const f = localStorage.getItem("rascunhos-filter"); if (f) state.filter = f === "all" ? "all" : +f; } catch (e) {}
+render();
+
+/* ---------- capacidades ---------- */
+(async () => {
+  if (!window.claude?.use) { banner("Abra esta página pelo claude.ai para salvar e organizar notas."); state.loaded = true; render(); return; }
+  claude.use("sample").then(s => { state.sample = s; });
+  const db = await claude.use("db");
+  if (!db) { banner("O banco de notas não está disponível. Entre na sua conta do claude.ai e abra a página de novo."); state.loaded = true; render(); return; }
+  state.db = db; state.col = db.collection("notas");
+  state.col.orderBy("updatedAt", "desc").onSnapshot(snap => {
+    state.notes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    state.loaded = true;
+    if (state.confirmDel && !state.notes.some(n => n.id === state.confirmDel)) state.confirmDel = null;
+    render();
+  }, err => { banner("Erro ao carregar as notas: " + (err?.message || err?.code || "desconhecido")); state.loaded = true; render(); });
+})();
+</script>
