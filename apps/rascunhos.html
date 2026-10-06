@@ -69,6 +69,7 @@ button.danger { color: var(--danger); }
 @media (prefers-reduced-motion: reduce) { .spin { animation: none; } }
 .result { border-top: 1px dashed var(--line); padding-top: 10px; display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
 .result b { font-weight: 600; }
+.capture.drag { border-color: var(--accent); outline: 2px dashed var(--accent); outline-offset: -6px; }
 
 .filters { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: thin; }
 .chip { flex: none; display: inline-flex; align-items: center; gap: 7px; border-radius: 999px; padding: 6px 12px; font-size: 13.5px; white-space: nowrap; }
@@ -123,7 +124,9 @@ details .cap time { display: block; font-family: var(--font-mono); font-size: 11
     <label id="cap-label" for="cap-text">O que está na sua cabeça?</label>
     <textarea id="cap-text" placeholder="Ex.: preciso voltar a treinar de manhã, ligar pra minha mãe no domingo, e revisar a planilha de gastos do mês…"></textarea>
     <div class="row">
-      <span class="hint grow">Pode misturar vários assuntos. Para falar em vez de digitar, use o microfone do teclado do celular (ditado). Ctrl+Enter envia.</span>
+      <span class="hint grow">Pode misturar vários assuntos. Para falar em vez de digitar, use o microfone do teclado do celular (ditado). Também dá para arrastar arquivos .txt para cá. Ctrl+Enter envia.</span>
+      <input id="file-in" type="file" accept=".txt,.md,text/plain,text/markdown" multiple hidden>
+      <button id="file-btn" type="button">Carregar .txt</button>
       <button id="cap-btn" class="primary" type="button">Organizar</button>
     </div>
     <div id="cap-status" class="status" hidden></div>
@@ -466,6 +469,42 @@ Responda somente com JSON:
   }
   state.busy = false;
 }
+
+/* ---------- arquivos .txt ---------- */
+const MAX_FILE = 60 * 1024;
+async function lerTexto(file) {
+  const buf = await file.arrayBuffer();
+  let txt = new TextDecoder("utf-8").decode(buf);
+  // Bloco de Notas antigo salva em ANSI: acentos viram "�" em UTF-8.
+  if (txt.includes("�")) txt = new TextDecoder("windows-1252").decode(buf);
+  return txt.replace(/^﻿/, "").replace(/\r\n?/g, "\n").trim();
+}
+async function carregarArquivos(files) {
+  const lista = [...files].filter(f => /\.(txt|md)$/i.test(f.name) || f.type.startsWith("text/"));
+  const recusados = [...files].length - lista.length;
+  const partes = [], grandes = [];
+  for (const f of lista) {
+    if (f.size > MAX_FILE) { grandes.push(f.name); continue; }
+    try { const t = await lerTexto(f); if (t) partes.push(lista.length > 1 ? `[${f.name}]\n${t}` : t); } catch (e) { grandes.push(f.name); }
+  }
+  if (partes.length) {
+    const ta = $("cap-text");
+    ta.value = [ta.value.trim(), ...partes].filter(Boolean).join("\n\n");
+    try { localStorage.setItem(DRAFT, ta.value); } catch (e) {}
+    ta.focus();
+  }
+  const avisos = [];
+  if (partes.length) avisos.push(`${partes.length} arquivo(s) carregado(s). Revise e toque em Organizar.`);
+  if (grandes.length) avisos.push(`Não carregado (acima de 60 KB ou ilegível): ${grandes.join(", ")}. Divida em arquivos menores.`);
+  if (recusados) avisos.push(`${recusados} arquivo(s) ignorado(s): só .txt e .md.`);
+  setStatus(avisos.join(" "), grandes.length || recusados ? "err" : "");
+}
+$("file-btn").addEventListener("click", () => $("file-in").click());
+$("file-in").addEventListener("change", e => { carregarArquivos(e.target.files); e.target.value = ""; });
+const capBox = document.querySelector(".capture");
+["dragenter", "dragover"].forEach(ev => capBox.addEventListener(ev, e => { if ([...(e.dataTransfer?.types || [])].includes("Files")) { e.preventDefault(); capBox.classList.add("drag"); } }));
+["dragleave", "drop"].forEach(ev => capBox.addEventListener(ev, e => { if (ev === "dragleave" && capBox.contains(e.relatedTarget)) return; capBox.classList.remove("drag"); }));
+capBox.addEventListener("drop", e => { if (e.dataTransfer?.files?.length) { e.preventDefault(); carregarArquivos(e.dataTransfer.files); } });
 
 /* ---------- eventos ---------- */
 $("cap-btn").addEventListener("click", organizar);
