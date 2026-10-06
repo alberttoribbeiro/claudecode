@@ -1,9 +1,18 @@
 # Tarefas e Próximos Passos
 
-Use este arquivo para manter clareza. Evite listas infinitas.
-Prefira "próximos passos de alta alavancagem".
+Prefira poucos próximos passos de alta alavancagem.  
+Evite listas infinitas.  
+Sempre que possível, mantenha pelo menos um próximo passo nas áreas de base (Espiritual, Saúde ou Relacionamentos).
 
 ## Hoje / Esta semana (foco)
+
+### Área prioritária 1: 
+- [ ] 
+
+### Área prioritária 2: 
+- [ ] 
+
+### Área prioritária 3: 
 - [ ] 
 
 ## Em espera / Aguardando
@@ -12,7 +21,7 @@ Prefira "próximos passos de alta alavancagem".
 ## Ideias / Talvez depois
 - [ ] 
 
-## Concluídas recentemente (mover para cá e arquivar periodicamente)
+## Concluídas recentemente
 - [x] 
 
 ---
