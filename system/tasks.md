@@ -2,7 +2,7 @@
 
 Prefira poucos próximos passos de alta alavancagem.  
 Evite listas infinitas.  
-Sempre que possível, mantenha pelo menos um próximo passo nas áreas de base (Espiritual, Saúde ou Relacionamentos).
+Sempre que possível, mantenha pelo menos um próximo passo nas áreas de base (Espiritual, Saúde, Sentimental ou Família/Amigos).
 
 ## Hoje / Esta semana (foco)
 

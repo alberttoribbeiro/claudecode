@@ -104,6 +104,20 @@
 2. 
 3. 
 
+## Regras do dia (decididas em 2026-10-08)
+- **Ritual matinal**: 20 a 30 minutos, com briefing, nota de energia, três prioridades e uma leitura ou oração curta.
+- **Prioridades**: três por dia, mais uma ação da base.
+- **Ação da base**: uma ação mínima fixa todo dia. As quatro áreas da base são checadas na revisão semanal.
+- **Blocos de foco**: dois por dia, de 90 minutos.
+- **Energia 4 ou menos**: uma prioridade, tarefas leves, e a ação da base continua.
+- **Energia 7 ou mais**: pode entrar a rotina com protocolos próprios.
+- **Sempre**: blocos de tempo com foco, planejamento antes de começar, descanso no plano.
+- **Captura**: ideia ou preocupação vai para o `inbox` na hora, em uma frase.
+- **Fechamento**: 10 minutos. O que foi concluído, energia do fim do dia, uma lição, e o que sobrou vai para o `inbox`.
+- **Prioridade que não saiu**: passa para o dia seguinte uma vez. Se falhar de novo, vira projeto ou é descartada conscientemente.
+- **Revisão semanal**: domingo à noite, 30 minutos, começando pela base.
+- **Medição semanal**: prioridades concluídas por dia, dias com a ação da base cumprida e média de energia.
+
 ## Padrões de energia e foco
 - Horários de alta energia: 
 - Horários de baixa energia: 

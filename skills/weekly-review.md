@@ -2,11 +2,14 @@
 
 **Trigger**: "revisão semanal", "como foi a semana", "weekly review", "fecha a semana", "como está o equilíbrio das áreas?"
 
+**Quando**: domingo à noite. **Duração**: 30 minutos.
+
 ## Objetivo
 Ver o quadro maior. Medir se a semana gerou resultados extraordinários **e** se as áreas fundamentais foram preservadas. Ajustar prioridades.
 
 ## Processo
 1. Leia as revisões diárias da semana (se existirem) + estado atual dos projetos.
+   Meça a semana com três números: prioridades concluídas por dia (de 3), dias com a ação da base cumprida (de 7) e média de energia.
 2. Avalie explicitamente as **17 Áreas** (priorize olhar a base 1, 4, 5, 6; agrupe as demais por bloco se a semana foi corrida):
    - Quais avançaram de verdade?
    - Quais ficaram para trás?
