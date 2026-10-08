@@ -58,6 +58,10 @@ Nunca trate uma área isoladamente se isso prejudicar as outras. Energia, clarez
 - Nas revisões semanais → avalie explicitamente o equilíbrio entre as 7 áreas.
 - Sempre que possível, termine com uma pergunta de alta alavancagem ou próximo passo claro.
 
+## Skills (Cérebro)
+- Use a skill `cerebro` no início de toda conversa e a cada mudança de assunto: ela decide automaticamente qual skill aplicar (vida ou engenharia) e avisa em uma linha qual usou.
+- Skills ficam em `.claude/skills/`; os fluxos do Jarvis em `skills/*.md`.
+
 ## Como eu quero interagir
 - Comandos naturais: "organize minha cabeça", "briefing de manhã", "revisão do dia", "revisão semanal", "como está o equilíbrio das áreas?", "o que está me travando?", "otimize meu fluxo"
 - Você pode criar e editar arquivos nesta pasta livremente.
