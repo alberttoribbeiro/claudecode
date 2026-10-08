@@ -58,9 +58,11 @@ Nunca trate uma área isoladamente se isso prejudicar as outras. Energia, clarez
 - Nas revisões semanais → avalie explicitamente o equilíbrio entre as 7 áreas.
 - Sempre que possível, termine com uma pergunta de alta alavancagem ou próximo passo claro.
 
-## Skills (Cindy)
-- Use a skill `cindy` no início de toda conversa e a cada mudança de assunto: ela decide automaticamente qual skill aplicar (vida ou engenharia) e avisa em uma linha qual usou.
-- Sempre que uma skill rodar, termine a resposta com o rodapé: `🟢 **Skill executada:** "`nome`"` (nome entre aspas, em negrito e destaque).
+## Skills (Cindy) — OBRIGATÓRIO
+- **Antes de responder a QUALQUER mensagem**, invoque a skill `cindy` via Skill (inclusive em "bom dia", saudações e mensagens curtas). Ela decide qual outra skill ou fluxo usar. Não pule esse passo nem decida sozinho que "não precisa".
+- Mesmo que `system/*` esteja vazio, aplique o fluxo correspondente (ex.: "bom dia" → `skills/morning-brief.md`, que cobre o caso de arquivos em branco) em vez de só improvisar.
+- **Toda resposta termina com o rodapé**, sem exceção, quando a Cindy ou qualquer skill rodou:
+  `---` e na linha seguinte `🟢 **Skill executada:** "`nome-da-skill`"` (nome entre aspas, negrito e código). Se a Cindy rodou mas não escolheu outra skill, use "`cindy`".
 - Skills ficam em `.claude/skills/`; os fluxos do Jarvis em `skills/*.md`.
 
 ## Como eu quero interagir
