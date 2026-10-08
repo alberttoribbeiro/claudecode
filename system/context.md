@@ -66,10 +66,11 @@
 ### Médio prazo (1–3 meses)
 - 
 
-### Foco atual (esta semana) — máximo 3 áreas prioritárias
-1. 
-2. 
-3. 
+### Foco atual (esta semana) — 3 áreas prioritárias + 1 de manutenção
+1. Espiritual / Propósito / Emocional
+2. Finanças & Negócios (inclui tudo que envolve ganhos, dinheiro e trabalho)
+3. Relacionamentos
+4. Saúde & Energia (manutenção: um hábito mínimo diário, sem meta nova)
 
 ## Padrões de energia e foco
 - Horários de alta energia: 
@@ -85,4 +86,7 @@
 
 ## Observações do Jarvis
 (insights coletados ao longo do tempo)
-- 
+- 2026-10-08 (grill-me): a captura está espalhada entre papel, bloco de notas, agenda e Todoist. O problema não é só anotar, é ter clareza: ver um item e saber a próxima ação e a data.
+- Custo de errar: no trabalho, perda de prazos que afeta a empresa; na vida pessoal, objetivos parados e sensação de estar atrasado.
+- Quer sentir avanço, não só cumprir checklist. Quer visualizar o progresso.
+- Autonomia: o Jarvis explora muitas oportunidades e traz poucas, priorizadas (máximo 3 por semana). Ações internas e reversíveis podem ser feitas sem perguntar. Qualquer coisa que saia para fora continua com o usuário.
