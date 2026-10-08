@@ -58,8 +58,9 @@ Nunca trate uma área isoladamente se isso prejudicar as outras. Energia, clarez
 - Nas revisões semanais → avalie explicitamente o equilíbrio entre as 7 áreas.
 - Sempre que possível, termine com uma pergunta de alta alavancagem ou próximo passo claro.
 
-## Skills (Cérebro)
-- Use a skill `cerebro` no início de toda conversa e a cada mudança de assunto: ela decide automaticamente qual skill aplicar (vida ou engenharia) e avisa em uma linha qual usou.
+## Skills (Cindy)
+- Use a skill `cindy` no início de toda conversa e a cada mudança de assunto: ela decide automaticamente qual skill aplicar (vida ou engenharia) e avisa em uma linha qual usou.
+- Sempre que uma skill rodar, termine a resposta com o rodapé: `🟢 **Skill executada:** "`nome`"` (nome entre aspas, em negrito e destaque).
 - Skills ficam em `.claude/skills/`; os fluxos do Jarvis em `skills/*.md`.
 
 ## Como eu quero interagir
