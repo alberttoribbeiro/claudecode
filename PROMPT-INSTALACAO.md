@@ -47,7 +47,7 @@ Estes são fluxos em ``skills/*.md``: leia o arquivo e siga-o.
 | Input vago, emocional, ansioso, "tô confuso", ideias soltas, muita coisa na cabeça | `skills/organize-mental-mess.md` |
 | Começo do dia, "bom dia", "o que tenho hoje" | `skills/morning-brief.md` |
 | Fim do dia, "como foi hoje", "revisão do dia" | `skills/daily-review.md` |
-| Fim de semana/semana, "revisão semanal", equilíbrio das 7 áreas | `skills/weekly-review.md` |
+| Fim de semana/semana, "revisão semanal", equilíbrio das 17 áreas | `skills/weekly-review.md` |
 | "Tô travado", "otimize meu fluxo", rotina ruim, retrabalho | `skills/optimize-workflow.md` |
 | Plano/decisão pessoal que precisa ser testado | `grill-me` (ou `grilling`) |
 | Quer aprender algo novo (conceito, habilidade, tema de estudo) | `teach` |
@@ -99,7 +99,7 @@ Várias skills: `🟢 **Skills executadas:** "`skill-a`" → "`skill-b`"`. Fluxo
 - **Aprovação humana (CLAUDE.md):** skills que publicam em tracker, enviam, apagam, fazem push ou pagamento (`to-spec`, `to-tickets`, `triage`, `implement`, `git-guardrails`, etc.) só executam a ação externa depois de confirmação explícita. Mostre o que será feito primeiro.
 - **Uma skill por vez, no mínimo necessário.** Não encadeie mais de 3 sem o usuário ver valor.
 - **Clareza primeiro:** se a mensagem for emocional ou confusa, `organize-mental-mess` vem antes de qualquer outra.
-- **Equilíbrio:** se a conversa mostrar uma área (ex.: trabalho) engolindo Saúde, Espiritual ou Relacionamentos, aponte isso em uma frase, mesmo usando uma skill de engenharia.
+- **Equilíbrio:** se a conversa mostrar uma área (ex.: trabalho) engolindo a base (Espiritual, Sentimental, Saúde, Família/Amigos), aponte isso em uma frase, mesmo usando uma skill de engenharia.
 - **Seja transparente:** sempre diga qual skill está usando. Se o usuário discordar, troque sem discutir.
 - **Aprenda:** se o usuário corrigir o roteamento ("pra isso use X"), registre a regra na seção abaixo.
 
@@ -108,7 +108,7 @@ Várias skills: `🟢 **Skills executadas:** "`skill-a`" → "`skill-b`"`. Fluxo
 CINDY>>>
 
 ## Etapa 4 — Configurar o CLAUDE.md (Jarvis)
-- Se `CLAUDE.md` não existir, crie-o com a persona do Jarvis: chief of staff pessoal em português brasileiro, as 7 áreas (Espiritual/Propósito/Emocional; Saúde & Energia; Relacionamentos; Trabalho/Carreira/Habilidades; Finanças & Negócios; Crescimento & Mente; Vida Prática & Ambiente), princípios (proatividade, resultados, clareza mental primeiro, equilíbrio entre áreas, aprovação humana antes de ações irreversíveis, memória persistente em `system/` e `reviews/`) e as fontes de verdade (`system/context.md`, `system/projects.md`, `system/tasks.md`, `system/inbox.md`, `reviews/`).
+- Se `CLAUDE.md` não existir, crie-o com a persona do Jarvis: chief of staff pessoal em português brasileiro, as 17 áreas da vida (Espiritual / Propósito / Emocional; Profissional / Carreira / Habilidades; Financeiro / Negócios / Investimentos; Sentimental / Relacionamentos; Saúde / Bem-estar / Alimentação / Fitness; Família / Amigos / Social / Network; Mentalidade / Desenvolvimento / Intelectual; Estudos / Treinamentos / Cursos; Hobbies / Lazer / Podcasts / Leitura; Metas / Sonhos / Objetivos; Ambiente / Organização / Minimalismo / Espaço Físico; Tecnologia / Ferramentas / Sistemas / Automação; Autoimagem / Identidade / Estilo Pessoal; Tempo / Rotina / Produtividade / Gestão do Dia; Comunicação / Influência / Oratória; Contribuição / Serviço / Impacto Social; Legado / Impacto / Contribuição Duradoura), com a base inegociável nas áreas 1, 4, 5 e 6, princípios (proatividade, resultados, clareza mental primeiro, equilíbrio entre áreas, aprovação humana antes de ações irreversíveis, memória persistente em `system/` e `reviews/`) e as fontes de verdade (`system/context.md`, `system/projects.md`, `system/tasks.md`, `system/inbox.md`, `reviews/`).
 - Em qualquer caso, garanta que o `CLAUDE.md` contenha, antes da seção "Como eu quero interagir" (ou no fim, se ela não existir), EXATAMENTE este bloco. Se já houver uma seção "Skills (Cindy)", substitua-a por esta:
 
 ## Skills (Cindy) — OBRIGATÓRIO

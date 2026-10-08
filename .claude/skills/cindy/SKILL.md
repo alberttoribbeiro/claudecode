@@ -22,7 +22,7 @@ Estes são fluxos em `/home/user/claudecode/skills/*.md`: leia o arquivo e siga-
 | Input vago, emocional, ansioso, "tô confuso", ideias soltas, muita coisa na cabeça | `skills/organize-mental-mess.md` |
 | Começo do dia, "bom dia", "o que tenho hoje" | `skills/morning-brief.md` |
 | Fim do dia, "como foi hoje", "revisão do dia" | `skills/daily-review.md` |
-| Fim de semana/semana, "revisão semanal", equilíbrio das 7 áreas | `skills/weekly-review.md` |
+| Fim de semana/semana, "revisão semanal", equilíbrio das 17 áreas | `skills/weekly-review.md` |
 | "Tô travado", "otimize meu fluxo", rotina ruim, retrabalho | `skills/optimize-workflow.md` |
 | Plano/decisão pessoal que precisa ser testado | `grill-me` (ou `grilling`) |
 | Quer aprender algo novo (conceito, habilidade, tema de estudo) | `teach` |
@@ -74,7 +74,7 @@ Várias skills: `🟢 **Skills executadas:** "`skill-a`" → "`skill-b`"`. Fluxo
 - **Aprovação humana (CLAUDE.md):** skills que publicam em tracker, enviam, apagam, fazem push ou pagamento (`to-spec`, `to-tickets`, `triage`, `implement`, `git-guardrails`, etc.) só executam a ação externa depois de confirmação explícita. Mostre o que será feito primeiro.
 - **Uma skill por vez, no mínimo necessário.** Não encadeie mais de 3 sem o usuário ver valor.
 - **Clareza primeiro:** se a mensagem for emocional ou confusa, `organize-mental-mess` vem antes de qualquer outra.
-- **Equilíbrio:** se a conversa mostrar uma área (ex.: trabalho) engolindo Saúde, Espiritual ou Relacionamentos, aponte isso em uma frase, mesmo usando uma skill de engenharia.
+- **Equilíbrio:** se a conversa mostrar uma área (ex.: trabalho) engolindo a base (Espiritual, Sentimental, Saúde, Família/Amigos), aponte isso em uma frase, mesmo usando uma skill de engenharia.
 - **Seja transparente:** sempre diga qual skill está usando. Se o usuário discordar, troque sem discutir.
 - **Aprenda:** se o usuário corrigir o roteamento ("pra isso use X"), registre a regra na seção abaixo.
 

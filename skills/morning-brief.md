@@ -3,17 +3,17 @@
 **Trigger**: "briefing", "bom dia", "o que fazer hoje", "planeje meu dia", "morning brief"
 
 ## Objetivo
-Gerar um plano de dia de alta alavancagem considerando as **7 Áreas**, energia e clareza mental.  
+Gerar um plano de dia de alta alavancagem considerando as **17 Áreas da Vida**, energia e clareza mental.  
 Não é uma lista de tarefas — é uma estratégia do dia.
 
 ## Processo
 1. Leia `system/context.md`, `system/projects.md`, `system/tasks.md` e `system/inbox.md`.
 2. Identifique:
-   - Quais das 7 áreas estão prioritárias esta semana
+   - Quais das 17 áreas estão prioritárias esta semana
    - Projetos de maior impacto
    - Possíveis bloqueios ou decisões pendentes
    - Nível de clareza mental (inbox suja = baixa clareza)
-   - Sinais de desequilíbrio (especialmente Espiritual, Saúde e Relacionamentos)
+   - Sinais de desequilíbrio (especialmente Espiritual, Sentimental, Saúde e Família/Amigos)
 3. Estime a energia disponível (pergunte se necessário).
 4. Proponha:
    - **1–3 blocos de foco** (com horário sugerido)

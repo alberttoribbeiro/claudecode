@@ -8,7 +8,7 @@ Foco em resultados e momentum, sem culpa.
 
 ## Processo
 1. Pergunte (ou ajude a responder):
-   - O que realmente avançou hoje? (em quais das 7 áreas?)
+   - O que realmente avançou hoje? (em quais das 17 áreas?)
    - O que foi só "ocupação"?
    - O que me travou ou drenou energia?
    - Qual foi o momento de maior clareza ou impacto?

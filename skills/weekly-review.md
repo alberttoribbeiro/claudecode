@@ -7,10 +7,10 @@ Ver o quadro maior. Medir se a semana gerou resultados extraordinários **e** se
 
 ## Processo
 1. Leia as revisões diárias da semana (se existirem) + estado atual dos projetos.
-2. Avalie explicitamente as **7 Áreas**:
+2. Avalie explicitamente as **17 Áreas** (priorize olhar a base 1, 4, 5, 6; agrupe as demais por bloco se a semana foi corrida):
    - Quais avançaram de verdade?
    - Quais ficaram para trás?
-   - A base (Espiritual / Saúde / Relacionamentos) está saudável?
+   - A base (Espiritual / Sentimental / Saúde / Família e Amigos) está saudável?
    - Quantidade de bagunça mental processada vs acumulada
    - Energia média e padrões de desperdício
 3. Celebre o que funcionou.
@@ -24,14 +24,24 @@ Ver o quadro maior. Medir se a semana gerou resultados extraordinários **e** se
 **Resultados extraordinários**:
 - ...
 
-**Situação das 7 Áreas** (rápido):
+**Situação das 17 Áreas** (rápido: 🟢 ok · 🟡 atenção · 🔴 negligenciada):
 1. Espiritual / Propósito / Emocional → 
-2. Saúde & Energia → 
-3. Relacionamentos → 
-4. Trabalho / Carreira / Habilidades → 
-5. Finanças & Negócios → 
-6. Crescimento & Mente → 
-7. Vida Prática & Ambiente → 
+2. Profissional / Carreira / Habilidades → 
+3. Financeiro / Negócios / Investimentos → 
+4. Sentimental / Relacionamentos → 
+5. Saúde / Bem-estar / Alimentação / Fitness → 
+6. Família / Amigos / Social / Network → 
+7. Mentalidade / Desenvolvimento / Intelectual → 
+8. Estudos / Treinamentos / Cursos → 
+9. Hobbies / Lazer / Podcasts / Leitura → 
+10. Metas / Sonhos / Objetivos → 
+11. Ambiente / Organização / Minimalismo / Espaço Físico → 
+12. Tecnologia / Ferramentas / Sistemas / Automação → 
+13. Autoimagem / Identidade / Estilo Pessoal → 
+14. Tempo / Rotina / Produtividade / Gestão do Dia → 
+15. Comunicação / Influência / Oratória → 
+16. Contribuição / Serviço / Impacto Social → 
+17. Legado / Impacto / Contribuição Duradoura → 
 
 **O que ficou para trás (e por quê)**: ...
 
