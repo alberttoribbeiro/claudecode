@@ -140,6 +140,7 @@ button:disabled { opacity: 0.5; cursor: progress; }
 }
 .lesson-body a:hover { color: var(--accent); text-decoration: underline; }
 .lesson-body p { margin: 0; }
+.lesson-body .reason { font-size: 14px; }
 
 .watched { font-weight: 400; font-size: 14px; display: flex; align-items: center; gap: 6px; }
 .watched input { width: auto; }

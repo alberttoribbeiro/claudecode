@@ -1,7 +1,6 @@
-// Interface e chamadas à YouTube Data API v3. A lógica de currículo fica em mentor.js.
+// Interface: pede o curso ao servidor e mostra as etapas, as aulas e o progresso.
+// Nenhuma chave de API passa por aqui; quem busca no YouTube é o servidor (server.js).
 
-const API_BASE = 'https://www.googleapis.com/youtube/v3';
-const KEY_STORAGE = 'ytmentor.apiKey';
 const PROGRESS_STORAGE = 'ytmentor.progress';
 
 const $ = (sel) => document.querySelector(sel);
@@ -19,85 +18,96 @@ function storageSet(key, value) {
   try {
     localStorage.setItem(key, JSON.stringify(value));
   } catch {
-    // Armazenamento indisponível (modo privado, por exemplo): o app segue funcionando sem persistir.
+    // Sem armazenamento (modo privado, por exemplo): o app segue funcionando sem salvar.
   }
 }
 
-async function apiGet(path, params, apiKey) {
-  const url = new URL(`${API_BASE}/${path}`);
-  Object.entries({ ...params, key: apiKey }).forEach(([k, v]) => url.searchParams.set(k, v));
-
-  const response = await fetch(url);
-  if (!response.ok) {
-    const body = await response.json().catch(() => ({}));
-    const reason = body?.error?.errors?.[0]?.reason || body?.error?.status || response.status;
-    if (reason === 'quotaExceeded') {
-      throw new Error('A cota diária da API do YouTube acabou. Tente amanhã ou use outra chave.');
-    }
-    if (response.status === 400 || response.status === 403) {
-      throw new Error(`A chave da API foi recusada (${reason}). Confira se a YouTube Data API v3 está ativa.`);
-    }
-    throw new Error(`Erro ao falar com o YouTube (${response.status}).`);
-  }
-  return response.json();
+async function fetchCourse(topic) {
+  const response = await fetch('/api/course', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ topic }),
+  });
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(body.error || `Erro ao montar o curso (${response.status}).`);
+  return body;
 }
 
-// search.list (100 unidades de cota) + videos.list (1 unidade) para ter a duração de cada vídeo.
-async function searchVideos(query, apiKey) {
-  const search = await apiGet('search', {
-    part: 'snippet',
-    type: 'video',
-    q: query,
-    maxResults: 10,
-    relevanceLanguage: 'pt',
-    regionCode: 'BR',
-    safeSearch: 'moderate',
-    videoEmbeddable: 'true',
-  }, apiKey);
+const progressKey = (course) => course.topic.trim().toLowerCase();
 
-  const ids = search.items.map((item) => item.id.videoId).filter(Boolean);
-  if (ids.length === 0) return [];
-
-  const details = await apiGet('videos', {
-    part: 'contentDetails,statistics',
-    id: ids.join(','),
-  }, apiKey);
-
-  const byId = new Map(details.items.map((item) => [item.id, item]));
-  return search.items
-    .map((item) => {
-      const detail = byId.get(item.id.videoId);
-      if (!detail) return null;
-      return {
-        id: item.id.videoId,
-        title: item.snippet.title,
-        channel: item.snippet.channelTitle,
-        thumbnail: item.snippet.thumbnails?.medium?.url || '',
-        durationSec: Mentor.parseDuration(detail.contentDetails.duration),
-        views: Number(detail.statistics.viewCount || 0),
-      };
-    })
-    .filter(Boolean);
+function getCompleted(course) {
+  return storageGet(PROGRESS_STORAGE, {})[progressKey(course)] || [];
 }
 
-async function buildCourse(topic, apiKey, onProgress) {
-  const syllabus = Mentor.buildSyllabus(topic);
-  const used = new Set();
-  const modules = [];
+function toggleWatched(course, lessonId, watched) {
+  const all = storageGet(PROGRESS_STORAGE, {});
+  const set = new Set(all[progressKey(course)] || []);
+  if (watched) set.add(lessonId);
+  else set.delete(lessonId);
+  all[progressKey(course)] = [...set];
+  storageSet(PROGRESS_STORAGE, all);
+}
 
-  for (let i = 0; i < syllabus.length; i++) {
-    const stage = syllabus[i];
-    onProgress(`Buscando "${stage.title}" (${i + 1}/${syllabus.length})…`);
-    const videos = await searchVideos(stage.query, apiKey);
-    const lessons = Mentor.pickLessons(videos, { limit: 3, exclude: used });
-    lessons.forEach((lesson) => used.add(lesson.id));
-    modules.push({ ...stage, lessons });
+function updateProgress(course) {
+  const keys = course.modules.flatMap((m) => m.lessons.map((l) => l.id));
+  const done = new Set(getCompleted(course));
+  const finished = keys.filter((id) => done.has(id)).length;
+  const percent = keys.length === 0 ? 0 : Math.round((finished / keys.length) * 100);
+  $('.progress-bar span').style.width = `${percent}%`;
+  $('.progress-text').textContent = keys.length === 0
+    ? 'Nenhuma aula encontrada.'
+    : `${finished} de ${keys.length} aulas assistidas (${percent}%)`;
+}
+
+function renderLesson(course, lesson, done) {
+  const card = document.createElement('article');
+  card.className = 'lesson' + (done.has(lesson.id) ? ' done' : '');
+
+  const thumb = document.createElement('img');
+  thumb.src = lesson.thumbnail;
+  thumb.alt = '';
+  thumb.loading = 'lazy';
+
+  const body = document.createElement('div');
+  body.className = 'lesson-body';
+
+  const link = document.createElement('a');
+  link.href = `https://www.youtube.com/watch?v=${encodeURIComponent(lesson.id)}`;
+  link.target = '_blank';
+  link.rel = 'noopener';
+  link.textContent = lesson.title;
+
+  const meta = document.createElement('p');
+  meta.className = 'muted';
+  meta.textContent = `${lesson.channel} · ${Mentor.formatDuration(lesson.durationSec)}`;
+
+  body.append(link, meta);
+
+  if (lesson.reason) {
+    const why = document.createElement('p');
+    why.className = 'reason';
+    why.textContent = lesson.reason;
+    body.append(why);
   }
 
-  return { topic, createdAt: new Date().toISOString(), modules };
+  const label = document.createElement('label');
+  label.className = 'watched';
+  const checkbox = document.createElement('input');
+  checkbox.type = 'checkbox';
+  checkbox.checked = done.has(lesson.id);
+  checkbox.addEventListener('change', () => {
+    toggleWatched(course, lesson.id, checkbox.checked);
+    card.classList.toggle('done', checkbox.checked);
+    updateProgress(course);
+  });
+  label.append(checkbox, document.createTextNode(' Assisti'));
+  body.append(label);
+
+  card.append(thumb, body);
+  return card;
 }
 
-function renderCourse(course, completedIds) {
+function renderCourse(course) {
   const container = $('#course');
   container.replaceChildren();
 
@@ -106,7 +116,7 @@ function renderCourse(course, completedIds) {
   progressBox.innerHTML = '<div class="progress-bar"><span></span></div><p class="progress-text"></p>';
   container.append(progressBox);
 
-  const done = new Set(completedIds);
+  const done = new Set(getCompleted(course));
 
   course.modules.forEach((module, index) => {
     const section = document.createElement('section');
@@ -126,72 +136,11 @@ function renderCourse(course, completedIds) {
       section.append(empty);
     }
 
-    module.lessons.forEach((lesson) => {
-      const card = document.createElement('article');
-      card.className = 'lesson' + (done.has(lesson.id) ? ' done' : '');
-
-      const thumb = document.createElement('img');
-      thumb.src = lesson.thumbnail;
-      thumb.alt = '';
-      thumb.loading = 'lazy';
-
-      const body = document.createElement('div');
-      body.className = 'lesson-body';
-
-      const link = document.createElement('a');
-      link.href = `https://www.youtube.com/watch?v=${encodeURIComponent(lesson.id)}`;
-      link.target = '_blank';
-      link.rel = 'noopener';
-      link.textContent = lesson.title;
-
-      const meta = document.createElement('p');
-      meta.className = 'muted';
-      meta.textContent = `${lesson.channel} · ${Mentor.formatDuration(lesson.durationSec)}`;
-
-      const label = document.createElement('label');
-      label.className = 'watched';
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.checked = done.has(lesson.id);
-      checkbox.addEventListener('change', () => {
-        toggleWatched(course, lesson.id, checkbox.checked);
-        card.classList.toggle('done', checkbox.checked);
-        updateProgress(course);
-      });
-      label.append(checkbox, document.createTextNode(' Assisti'));
-
-      body.append(link, meta, label);
-      card.append(thumb, body);
-      section.append(card);
-    });
-
+    module.lessons.forEach((lesson) => section.append(renderLesson(course, lesson, done)));
     container.append(section);
   });
 
   updateProgress(course);
-}
-
-function progressKey(course) {
-  return course.topic.trim().toLowerCase();
-}
-
-function getCompleted(course) {
-  return storageGet(PROGRESS_STORAGE, {})[progressKey(course)] || [];
-}
-
-function toggleWatched(course, lessonId, watched) {
-  const all = storageGet(PROGRESS_STORAGE, {});
-  const set = new Set(all[progressKey(course)] || []);
-  if (watched) set.add(lessonId);
-  else set.delete(lessonId);
-  all[progressKey(course)] = [...set];
-  storageSet(PROGRESS_STORAGE, all);
-}
-
-function updateProgress(course) {
-  const { total, finished, percent } = Mentor.summarizeProgress(course, getCompleted(course));
-  $('.progress-bar span').style.width = `${percent}%`;
-  $('.progress-text').textContent = `${finished} de ${total} aulas assistidas (${percent}%)`;
 }
 
 function setStatus(message, isError = false) {
@@ -203,18 +152,17 @@ function setStatus(message, isError = false) {
 async function onSubmit(event) {
   event.preventDefault();
   const topic = $('#topic').value.trim();
-  const apiKey = $('#apiKey').value.trim();
   if (!topic) return setStatus('Digite o tema que você quer aprender.', true);
-  if (!apiKey) return setStatus('Cole sua chave da YouTube Data API.', true);
 
-  storageSet(KEY_STORAGE, apiKey);
   $('#submit').disabled = true;
   $('#course').replaceChildren();
+  setStatus('Montando seu curso. Isso pode levar um minuto…');
 
   try {
-    const course = await buildCourse(topic, apiKey, (msg) => setStatus(msg));
-    renderCourse(course, getCompleted(course));
-    setStatus(`Curso montado: ${course.modules.reduce((n, m) => n + m.lessons.length, 0)} aulas.`);
+    const course = await fetchCourse(topic);
+    renderCourse(course);
+    const total = course.modules.reduce((n, m) => n + m.lessons.length, 0);
+    setStatus(`Curso montado: ${course.modules.length} etapas e ${total} aulas.`);
   } catch (err) {
     setStatus(err.message, true);
   } finally {
@@ -223,7 +171,6 @@ async function onSubmit(event) {
 }
 
 function init() {
-  $('#apiKey').value = storageGet(KEY_STORAGE, '');
   $('#form').addEventListener('submit', onSubmit);
 }
 

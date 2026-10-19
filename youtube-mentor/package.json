@@ -4,8 +4,11 @@
   "private": true,
   "description": "Busca vídeos do YouTube e monta um curso passo a passo sobre um tema.",
   "scripts": {
-    "start": "npx --yes serve .",
+    "start": "node server.js",
     "test": "node --test"
   },
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=18"
+  }
 }

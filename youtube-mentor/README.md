@@ -1,33 +1,39 @@
 # Mentor do YouTube
 
-Você digita o que quer aprender (ex.: "rebocar uma parede") e o app monta um curso completo:
-várias etapas (materiais, preparação, passo a passo, técnicas, erros comuns, acabamento),
-cada uma com as 3 melhores aulas encontradas no YouTube em português.
+Você digita qualquer tema (ex.: "fazer bolo de cenoura", "rebocar uma parede", "criar um micro SaaS no Lovable")
+e o app monta um curso em etapas, com as melhores aulas em português já escolhidas.
 
-Não é um buscador de vídeos solto: as aulas são filtradas (sem Shorts, sem vídeos curtos demais),
-ranqueadas por duração de aula, audiência e títulos didáticos, e não se repetem entre etapas.
-Você marca o que já assistiu e acompanha o progresso.
+Como funciona:
+1. Um modelo da Claude desenha as etapas do aprendizado do tema, com os termos de busca de quem é da área.
+2. O app busca cada etapa no YouTube e descarta Shorts e vídeos curtos demais.
+3. A Claude escolhe até 3 aulas por etapa e explica por que cada uma vale a pena.
+4. Você marca as aulas assistidas e acompanha o progresso (salvo no navegador).
+
+As chaves ficam no servidor, nunca no navegador.
 
 ## Como rodar
 
-1. Crie uma chave da **YouTube Data API v3** no Google Cloud Console
-   (projeto → ativar "YouTube Data API v3" → Credenciais → Criar chave de API).
-2. Sirva a pasta com um servidor estático (a API não aceita `file://` de forma confiável):
+Você precisa de Node.js 18 ou mais novo.
+
+1. Crie uma chave da **YouTube Data API v3** (Google Cloud Console → ativar a API → Credenciais → Criar chave de API).
+2. (Opcional, recomendado) Crie uma chave da **API da Claude** em console.anthropic.com. Sem ela, o app usa só o ranking local, sem as justificativas da IA.
+3. Inicie o servidor:
 
    ```bash
    cd youtube-mentor
-   npm start        # ou: python3 -m http.server 8080
+   export YOUTUBE_API_KEY="sua-chave-do-youtube"
+   export ANTHROPIC_API_KEY="sua-chave-da-claude"   # opcional
+   npm start
    ```
 
-3. Abra o endereço no navegador, cole a chave e clique em **Montar curso**.
+4. Abra http://localhost:8080, digite um tema e clique em **Montar curso**.
 
-A chave fica salva só no `localStorage` do seu navegador. Ela vai direto para o Google,
-não passa por nenhum servidor próprio.
+Para mudar a porta, use `PORT=3000 npm start`.
 
-## Cota
+## Custos
 
-A cota gratuita é de 10.000 unidades por dia. Cada curso faz 6 buscas (100 unidades cada)
-mais uma consulta de detalhes, então dá para montar cerca de 15 cursos por dia.
+- **YouTube:** cota gratuita de 10.000 unidades por dia. Cada etapa gasta cerca de 101 unidades, então um curso de 6 etapas gasta uns 600. Temas já pesquisados ficam em cache na memória do servidor, enquanto ele estiver rodando.
+- **Claude:** paga por uso. Um curso costuma custar centavos.
 
 ## Testes
 
@@ -35,13 +41,12 @@ mais uma consulta de detalhes, então dá para montar cerca de 15 cursos por dia
 npm test
 ```
 
-Os testes cobrem a lógica pura (`mentor.js`): leitura de duração, montagem do currículo,
-filtro e ranking de vídeos, e cálculo de progresso. A chamada à API não é testada aqui,
-porque depende de chave e rede.
+Os testes não usam rede: as chamadas à YouTube e à Claude são simuladas.
 
 ## Arquivos
 
-- `mentor.js` — lógica do currículo (sem rede)
-- `app.js` — chamadas à YouTube Data API e interface
-- `index.html`, `styles.css` — página
-- `mentor.test.js` — testes com `node:test`
+- `server.js`: servidor HTTP e rota `POST /api/course`
+- `course.js`: planejamento das etapas, busca no YouTube e escolha das aulas
+- `mentor.js`: lógica de duração, ranking e progresso (sem rede)
+- `app.js`, `index.html`, `styles.css`: interface
+- `*.test.js`: testes com `node:test`
