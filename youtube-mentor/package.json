@@ -1,0 +1,11 @@
+{
+  "name": "youtube-mentor",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Busca vídeos do YouTube e monta um curso passo a passo sobre um tema.",
+  "scripts": {
+    "start": "npx --yes serve .",
+    "test": "node --test"
+  },
+  "license": "UNLICENSED"
+}
